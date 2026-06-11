@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CognitiveProvider, useCognitive } from "@/lib/cognitive-state";
 import { Onboarding } from "@/components/focusguard/Onboarding";
 import { Dashboard } from "@/components/focusguard/Dashboard";
+import { StudyTimer } from "@/components/focusguard/StudyTimer";
 import { Intervention } from "@/components/focusguard/Intervention";
 
 export const Route = createFileRoute("/")({
