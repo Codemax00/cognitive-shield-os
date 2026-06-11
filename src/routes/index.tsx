@@ -1,29 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CognitiveProvider, useCognitive } from "@/lib/cognitive-state";
+import { Onboarding } from "@/components/focusguard/Onboarding";
+import { Dashboard } from "@/components/focusguard/Dashboard";
+import { Intervention } from "@/components/focusguard/Intervention";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "FocusGuard Cognitive OS" },
+      {
+        name: "description",
+        content:
+          "A focus timer and cognitive intervention OS. Emotional anchors, live neural visualization, therapeutic recovery.",
+      },
+      { property: "og:title", content: "FocusGuard Cognitive OS" },
+      {
+        property: "og:description",
+        content: "Prevent passive consumption. Anchor your discipline. Restore your mind.",
+      },
     ],
   }),
-  component: Index,
+  component: AppShell,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function AppShell() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <CognitiveProvider>
+      <Inner />
+    </CognitiveProvider>
+  );
+}
+
+function Inner() {
+  const { profile } = useCognitive();
+  return (
+    <>
+      {profile.onboarded ? <Dashboard /> : <Onboarding />}
+      <Intervention />
+    </>
   );
 }
