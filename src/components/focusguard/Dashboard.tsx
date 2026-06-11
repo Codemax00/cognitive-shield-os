@@ -5,20 +5,20 @@ import { useCognitive, STATE_COLORS } from "@/lib/cognitive-state";
 import { NeuralOrb } from "./NeuralOrb";
 import { StatRing } from "./StatRing";
 import { SettingsModal } from "./SettingsModal";
+import { StudySetupModal } from "./StudySetupModal";
 
 export function Dashboard() {
   const { brainState, overload, config, triggerIntervention } = useCognitive();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [studySetupOpen, setStudySetupOpen] = useState(false);
   const stateInfo = STATE_COLORS[brainState];
 
   const focusVal = Math.max(0, 100 - overload * 0.6);
   const dopamineVal = Math.min(100, 30 + overload * 0.4);
   const chaosVal = (overload / 150) * 100;
 
-  const startStudy = () => {
-    triggerIntervention("Study protocol initiated. Breathe in. Anchor yourself.");
-  };
+  const openStudySetup = () => setStudySetupOpen(true);
 
   const simulateDistraction = () => {
     triggerIntervention(
@@ -120,7 +120,7 @@ export function Dashboard() {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={startStudy}
+          onClick={openStudySetup}
           className="mt-2 flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#2B6CFF] via-[#5B5BFF] to-[#9D00FF] py-5 text-sm font-bold uppercase tracking-[0.25em] text-white neon-purple"
         >
           <Zap className="h-4 w-4" />
@@ -129,6 +129,7 @@ export function Dashboard() {
       </main>
 
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <StudySetupModal open={studySetupOpen} onClose={() => setStudySetupOpen(false)} />
     </div>
   );
 }

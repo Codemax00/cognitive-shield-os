@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CognitiveProvider, useCognitive } from "@/lib/cognitive-state";
 import { Onboarding } from "@/components/focusguard/Onboarding";
 import { Dashboard } from "@/components/focusguard/Dashboard";
+import { StudyTimer } from "@/components/focusguard/StudyTimer";
 import { Intervention } from "@/components/focusguard/Intervention";
 
 export const Route = createFileRoute("/")({
@@ -32,10 +33,11 @@ function AppShell() {
 }
 
 function Inner() {
-  const { profile } = useCognitive();
+  const { profile, studyActive } = useCognitive();
+  if (!profile.onboarded) return (<><Onboarding /><Intervention /></>);
   return (
     <>
-      {profile.onboarded ? <Dashboard /> : <Onboarding />}
+      {studyActive ? <StudyTimer /> : <Dashboard />}
       <Intervention />
     </>
   );
