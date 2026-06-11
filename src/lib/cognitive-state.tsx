@@ -70,9 +70,29 @@ export function CognitiveProvider({ children }: { children: ReactNode }) {
   const [interventionActive, setInterventionActive] = useState(false);
   const [interventionMessage, setInterventionMessage] = useState("");
   const [studyActive, setStudyActive] = useState(false);
+  const [studyTopic, setStudyTopic] = useState("");
+  const [studyDurationSec, setStudyDurationSec] = useState(0);
+  const [studyEndAt, setStudyEndAt] = useState<number | null>(null);
+  const [studyRemainingSec, setStudyRemainingSec] = useState(0);
   const [passiveSeconds, setPassiveSeconds] = useState(0);
   const [lastMilestone, setLastMilestone] = useState<string | null>(null);
   const firedMilestones = useRef<Set<string>>(new Set());
+
+  // Study countdown
+  useEffect(() => {
+    if (!studyActive || studyEndAt == null) return;
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((studyEndAt - Date.now()) / 1000));
+      setStudyRemainingSec(remaining);
+      if (remaining <= 0) {
+        setStudyActive(false);
+        setStudyEndAt(null);
+      }
+    };
+    tick();
+    const i = setInterval(tick, 500);
+    return () => clearInterval(i);
+  }, [studyActive, studyEndAt]);
 
   // Derive brain state from overload (unless RECOVERY)
   useEffect(() => {
@@ -148,11 +168,19 @@ export function CognitiveProvider({ children }: { children: ReactNode }) {
     setBrainStateRaw("CALM");
   };
 
-  const startStudy = () => {
+  const startStudy = (topic: string, minutes: number) => {
+    const dur = Math.max(1, Math.round(minutes)) * 60;
+    setStudyTopic(topic);
+    setStudyDurationSec(dur);
+    setStudyRemainingSec(dur);
+    setStudyEndAt(Date.now() + dur * 1000);
     setStudyActive(true);
     setOverload(40);
   };
-  const stopStudy = () => setStudyActive(false);
+  const stopStudy = () => {
+    setStudyActive(false);
+    setStudyEndAt(null);
+  };
 
   const value = useMemo<CognitiveContextValue>(
     () => ({
@@ -170,12 +198,15 @@ export function CognitiveProvider({ children }: { children: ReactNode }) {
       triggerIntervention,
       dismissIntervention,
       studyActive,
+      studyTopic,
+      studyDurationSec,
+      studyRemainingSec,
       startStudy,
       stopStudy,
       passiveSeconds,
       lastMilestone,
     }),
-    [overload, brainState, profile, config, interventionActive, interventionMessage, studyActive, passiveSeconds, lastMilestone],
+    [overload, brainState, profile, config, interventionActive, interventionMessage, studyActive, studyTopic, studyDurationSec, studyRemainingSec, passiveSeconds, lastMilestone],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
