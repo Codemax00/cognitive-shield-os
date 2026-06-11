@@ -39,7 +39,10 @@ interface CognitiveContextValue {
   dismissIntervention: () => void;
   // Study protocol
   studyActive: boolean;
-  startStudy: () => void;
+  studyTopic: string;
+  studyDurationSec: number;
+  studyRemainingSec: number;
+  startStudy: (topic: string, minutes: number) => void;
   stopStudy: () => void;
   // Passive tracking
   passiveSeconds: number;
