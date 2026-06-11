@@ -33,10 +33,11 @@ function AppShell() {
 }
 
 function Inner() {
-  const { profile } = useCognitive();
+  const { profile, studyActive } = useCognitive();
+  if (!profile.onboarded) return (<><Onboarding /><Intervention /></>);
   return (
     <>
-      {profile.onboarded ? <Dashboard /> : <Onboarding />}
+      {studyActive ? <StudyTimer /> : <Dashboard />}
       <Intervention />
     </>
   );
