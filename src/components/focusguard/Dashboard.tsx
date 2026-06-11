@@ -5,20 +5,20 @@ import { useCognitive, STATE_COLORS } from "@/lib/cognitive-state";
 import { NeuralOrb } from "./NeuralOrb";
 import { StatRing } from "./StatRing";
 import { SettingsModal } from "./SettingsModal";
+import { StudySetupModal } from "./StudySetupModal";
 
 export function Dashboard() {
   const { brainState, overload, config, triggerIntervention } = useCognitive();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [studySetupOpen, setStudySetupOpen] = useState(false);
   const stateInfo = STATE_COLORS[brainState];
 
   const focusVal = Math.max(0, 100 - overload * 0.6);
   const dopamineVal = Math.min(100, 30 + overload * 0.4);
   const chaosVal = (overload / 150) * 100;
 
-  const startStudy = () => {
-    triggerIntervention("Study protocol initiated. Breathe in. Anchor yourself.");
-  };
+  const openStudySetup = () => setStudySetupOpen(true);
 
   const simulateDistraction = () => {
     triggerIntervention(
